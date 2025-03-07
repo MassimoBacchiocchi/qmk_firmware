@@ -383,3 +383,20 @@ bool matrix_scan_custom(matrix_row_t current_matrix[]) {
 
     return changed;
 }
+
+bool led_update_kb(led_t led_state) {
+    bool res = led_update_user(led_state);
+    if(res) {
+        // gpio_write_pin sets the pin high for 1 and low for 0.
+        // In this example the pins are inverted, setting
+        // it low/0 turns it on, and high/1 turns the LED off.
+        // This behavior depends on whether the LED is between the pin
+        // and VCC or the pin and GND.
+        gpio_write_pin(B0, !led_state.num_lock);
+        gpio_write_pin(B1, !led_state.caps_lock);
+        gpio_write_pin(B2, !led_state.scroll_lock);
+        gpio_write_pin(B3, !led_state.compose);
+        gpio_write_pin(B4, !led_state.kana);
+    }
+    return res;
+}
